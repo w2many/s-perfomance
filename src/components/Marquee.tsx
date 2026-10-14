@@ -41,7 +41,7 @@ export function Marquee({ items, speed = 2 }: { items: string[]; speed?: number 
       {items.map((w) => (
         <span key={w} className="flex items-center">
           {/* Orbitron без кириллицы: латинские пункты им, остальные Exo 2 */}
-          <span className={`px-[0.6em] ${LATIN_ONLY.test(w) ? 'font-display' : 'font-head'}`}>{w}</span>
+          <span className={`px-[0.45em] ${LATIN_ONLY.test(w) ? 'font-display' : 'font-head'}`}>{w}</span>
           <span aria-hidden className="h-[3px] w-[0.55em] bg-red" />
         </span>
       ))}
@@ -49,11 +49,11 @@ export function Marquee({ items, speed = 2 }: { items: string[]; speed?: number 
   )
 
   return (
-    <div className="overflow-clip border-y border-line py-3.5 lg:py-5">
+    <div className="overflow-clip border-y border-line bg-black py-5 md:py-7">
       <p className="sr-only">{items.join(', ')}</p>
       <motion.div
         aria-hidden
-        className="flex w-max whitespace-nowrap text-[clamp(22px,3.2vw,44px)] font-extrabold uppercase leading-none text-silver"
+        className="flex w-max whitespace-nowrap text-[clamp(1.6rem,5.2vw,4.25rem)] font-extrabold uppercase leading-none text-silver"
         style={{ x: reduce ? 0 : x }}
       >
         {line}

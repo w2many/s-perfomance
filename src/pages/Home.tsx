@@ -46,6 +46,7 @@ export function Home() {
   return (
     <>
       <Hero />
+      <Marquee items={MARQUEE} />
       <WhatWeDo />
       <HowTo />
       <Brands />
@@ -66,7 +67,7 @@ function Hero() {
   const [logoScan, setLogoScan] = useState(0)
 
   return (
-    <section className="relative flex min-h-[max(560px,calc(100svh-var(--header-h)-var(--bar-h)))] flex-col bg-black pb-3 lg:pb-8">
+    <section className="relative flex min-h-[max(560px,calc(100svh-var(--header-h)-var(--bar-h)))] flex-col bg-black">
       <div className="wrap flex flex-1 flex-col">
         <div className="grid flex-1 items-center gap-10 py-5 lg:grid-cols-[1.1fr_.9fr] lg:gap-12 lg:py-10">
           <div className="min-w-0 @container">
@@ -151,7 +152,6 @@ function Hero() {
           </motion.div>
         </div>
       </div>
-      <Marquee items={MARQUEE} />
     </section>
   )
 }
