@@ -30,15 +30,15 @@ export function ContactForm({ service, headingLevel = 'h2' }: Props) {
     .filter(Boolean)
     .join('\n')
 
-  async function copyAndOpenTelegram() {
-    try {
-      await navigator.clipboard.writeText(message)
-      setCopied(true)
-      window.setTimeout(() => setCopied(false), 4000)
-    } catch {
-      setCopied(false)
-    }
-    window.open(TELEGRAM_URL, '_blank', 'noopener,noreferrer')
+  // Копирование запускается в обработчике клика, а Telegram открывается обычной ссылкой.
+  function copyMessage() {
+    navigator.clipboard
+      ?.writeText(message)
+      .then(() => {
+        setCopied(true)
+        window.setTimeout(() => setCopied(false), 4000)
+      })
+      .catch(() => setCopied(false))
   }
 
   return (
@@ -112,10 +112,16 @@ export function ContactForm({ service, headingLevel = 'h2' }: Props) {
             </a>
           )}
           {company.channels.telegram.enabled && (
-            <button type="button" onClick={copyAndOpenTelegram} className="btn btn-outline whitespace-normal py-3 text-center">
+            <a
+              href={TELEGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={copyMessage}
+              className="btn btn-outline whitespace-normal py-3 text-center"
+            >
               {copied ? <Check size={19} aria-hidden /> : <Copy size={19} aria-hidden />}
               {copied ? 'Скопировано, вставьте в чат' : 'Скопировать сообщение и открыть Telegram'}
-            </button>
+            </a>
           )}
           <a href={PRIMARY_PHONE.href} className="btn btn-outline">
             <Phone size={19} aria-hidden />

@@ -21,7 +21,11 @@ export default function App() {
   useEffect(() => initSmoothScroll(), [])
 
   useEffect(() => {
-    if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+    try {
+      history.scrollRestoration = 'manual'
+    } catch {
+      // нет доступа к history
+    }
     applySeo(readLocation().page)
     const onPop = () => {
       const next = readLocation()
@@ -39,7 +43,11 @@ export default function App() {
       scrollToTop()
       return
     }
-    window.history.pushState({ page }, '', href)
+    try {
+      window.history.pushState({ page }, '', href)
+    } catch {
+      // В песочнице (предпросмотр) история может быть недоступна: страница всё равно переключится.
+    }
     setState({ page, params: nextParams })
     applySeo(page)
   }, [])
