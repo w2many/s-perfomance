@@ -29,6 +29,9 @@ function business(): Record<string, unknown> {
     sameAs: [YANDEX_MAPS_URL, TELEGRAM_URL],
     paymentAccepted: 'Cash, Credit Card',
     knowsAbout: company.brands.value,
+    openingHoursSpecification: company.schedule.value
+      .filter((d) => d.opens)
+      .map((d) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: d.schemaDays, opens: d.opens, closes: d.closes })),
   }
   // geo не добавляется, пока координаты в статусе verify.
   if (company.rating.enabled) {

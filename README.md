@@ -13,8 +13,8 @@ npm run build    # сборка в dist/
 
 - `src/data/company.ts` — единственный источник фактов (`{ value, source, status }`), телефон `PRIMARY_PHONE`, `buildWhatsAppLink`, флаги `rating.enabled`, `award.enabled`, `LOGO_RIGHTS_CONFIRMED`, `SITE_URL`.
 - `src/data/services.ts` — группы услуг из карточки Яндекс Карт, `extraServices` (выездная диагностика, `show: false`).
-- `src/data/reviews.ts` — дословные отзывы (пусто).
-- `src/data/photos.ts` — фото для галереи (пусто; галерея появится при трёх фото и больше).
+- `src/data/reviews.ts` — дословные отзывы с 2ГИС.
+- `src/data/photos.ts` — фото для галереи (`home: true` — три фото на главной, на «О компании» все пять).
 - `src/lib/nav.ts` — адреса страниц (`/?page=...`). Для боевого запуска поменяйте `buildHref` и `readLocation` на реальные пути (`/services/`) и отдавайте `index.html` на каждый путь; остальной код менять не нужно.
 - `src/lib/seo.ts` — title, description и JSON-LD для каждой страницы.
 
@@ -22,9 +22,9 @@ npm run build    # сборка в dist/
 
 - Права на логотип: `LOGO_RIGHTS_CONFIRMED` (если `false`, везде текстовый знак).
 - Рейтинг 5.0 / 29 оценок / 28 отзывов сверить с живой карточкой; награда «Хорошее место 2026» (`award.enabled`).
-- График работы по дням, координаты точки (карта и `geo` выключены), выездная диагностика.
-- Цены (если готовы показывать), фото работ в `public/photos/`, дословные отзывы с разрешения авторов.
-- Реквизиты (`legal`), история и люди (`story`), FAQ (`faq`).
+- Координаты точки (для `geo` в JSON-LD), выездная диагностика, ссылка на карточку 2ГИС.
+- Год у отзыва «15 июня» (принят 2026), формулировки FAQ.
+- Цены (если готовы показывать), реквизиты (`legal`), история и люди (`story`).
 - Домен: `SITE_URL`, `index.html`, `public/robots.txt`, `public/sitemap.xml`.
 
 ## Фото

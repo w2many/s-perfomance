@@ -7,7 +7,7 @@ import type { Photo } from '../data/photos'
 export function ClipImage({ photo, className = '', sizes = '100vw' }: { photo: Photo; className?: string; sizes?: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] })
-  const y = useTransform(scrollYProgress, [0, 1], ['-6%', '6%'])
+  const y = useTransform(scrollYProgress, [0, 1], ['-5%', '5%'])
   return (
     <figure className={className}>
       <motion.div

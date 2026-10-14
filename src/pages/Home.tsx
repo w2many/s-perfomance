@@ -11,16 +11,21 @@ import { Gallery } from '../components/Gallery'
 import { Marquee } from '../components/Marquee'
 import { SCAN_EVENT } from '../components/Header'
 import { YandexReviewsButton } from '../components/RatingLink'
+import { ReviewList } from '../components/Reviews'
 import { Reveal } from '../components/Reveal'
 import { ScanLine } from '../components/ScanLine'
 import { ScanPass } from '../components/ScanPass'
 import { ServiceList } from '../components/ServiceList'
 import { ADDRESS_LINE, company, PRIMARY_PHONE, YANDEX_MAPS_URL } from '../data/company'
+import { photos } from '../data/photos'
 import { reviews } from '../data/reviews'
 import { EASE_OUT, plainFade, slideX } from '../lib/motion'
 import { useNav } from '../lib/nav'
 
 const { rating } = company
+
+/** Раскладка трёх фото на главной: на телефоне первое во всю ширину, на десктопе ступенькой. */
+const HOME_GALLERY = ['col-span-2 md:col-span-5', 'col-span-1 md:col-span-4 md:mt-28', 'col-span-1 md:col-span-3 md:mt-10']
 
 /** Пункты бегущей строки: только подтверждённые факты из карточки. */
 const MARQUEE = [
@@ -50,7 +55,7 @@ export function Home() {
       <WhatWeDo />
       <HowTo />
       <Brands />
-      <Gallery title="Работа в боксе" />
+      <Gallery photos={photos.filter((p) => p.home)} layout={HOME_GALLERY} />
       <ScanLine />
       <Numbers />
       <section className="bg-black py-20 lg:py-32">
@@ -276,18 +281,21 @@ function Final() {
       <ScanLine tone="red" />
       {reviews.length > 0 ? (
         <div className="wrap py-20 lg:py-28">
-          <h2 className="font-head text-[clamp(32px,5vw,72px)] font-extrabold text-silver">Отзывы</h2>
-          <div className="mt-12 grid gap-14">
-            {reviews.slice(0, 3).map((r) => (
-              <Reveal key={r.author + r.date}>
-                <blockquote className="max-w-4xl text-[clamp(22px,2.6vw,36px)] leading-snug text-silver">«{r.text}»</blockquote>
-                <p className="mt-4 text-steel">
-                  {r.author} · {r.source} · {new Date(r.date).toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' })}
-                </p>
-              </Reveal>
-            ))}
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="font-head text-[clamp(32px,5vw,72px)] font-extrabold leading-[1.02] text-silver">Отзывы</h2>
+            <p className="text-steel">Дословно, с 2ГИС</p>
           </div>
-          <YandexReviewsButton className="mt-12" />
+          <Reveal className="mt-12 lg:mt-16">
+            <ReviewList />
+          </Reveal>
+          <div className="mt-12 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+            <YandexReviewsButton />
+            {rating.enabled && (
+              <p className="text-steel">
+                {rating.value.score} на Яндекс Картах · {rating.value.reviewCount} отзывов
+              </p>
+            )}
+          </div>
         </div>
       ) : (
         <div className="wrap flex flex-col gap-6 py-14 sm:flex-row sm:items-center sm:justify-between lg:py-16">

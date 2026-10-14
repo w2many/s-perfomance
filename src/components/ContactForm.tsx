@@ -43,12 +43,19 @@ export function ContactForm({ service, headingLevel = 'h2' }: Props) {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)] lg:gap-20">
-      <div>
+      <div className="lg:sticky lg:top-[calc(var(--header-h)+32px)] lg:self-start">
         <Heading className="font-head text-[clamp(30px,4.4vw,60px)] font-extrabold leading-[1.05] text-silver">
           Расскажите, что нужно
         </Heading>
         <p className="mt-5 max-w-md text-steel">Напишите марку, модель, год автомобиля и что вас беспокоит.</p>
         <p className="mt-3 max-w-md text-steel">Сообщение соберётся само: останется отправить его в WhatsApp или Telegram.</p>
+        <figure className="mt-8 max-w-md border border-line bg-graphite-2">
+          <figcaption className="flex items-center gap-2 border-b border-line px-5 py-3 text-sm text-steel">
+            <span aria-hidden className="size-2 rounded-full bg-red" />
+            Ваше сообщение
+          </figcaption>
+          <p className="whitespace-pre-line px-5 py-4 text-[15px] leading-relaxed text-silver">{message}</p>
+        </figure>
       </div>
 
       <form className="grid gap-6" onSubmit={(e) => e.preventDefault()} aria-describedby={`${uid}-hint`}>

@@ -60,12 +60,15 @@ export const company = {
     status: 'confirmed',
   } as Fact<{ street: string; city: string; country: string }>,
 
-  // TODO(owner): проверить точку на карте. Пока статус verify, карта iframe и geo в JSON-LD не выводятся.
+  // TODO(owner): проверить точку на карте. Пока статус verify, geo в JSON-LD не выводится.
+  // Карта на «Контактах» показывает организацию по yandexOrgId, точка из координат там только центр карты.
   coordinates: {
     value: { lat: 44.57749, lon: 33.474425 },
     source: `${YANDEX}, параметр ссылки карточки`,
     status: 'verify',
   } as Fact<{ lat: number; lon: number }>,
+
+  yandexOrgId: '40920141656',
 
   phone: { value: PRIMARY_PHONE.display, source: YANDEX, status: 'confirmed' } as Fact<string>,
 
@@ -73,13 +76,22 @@ export const company = {
     whatsapp: { enabled: true, url: buildWhatsAppLink(), source: YANDEX, status: 'confirmed' as FactStatus },
     telegram: { enabled: true, url: 'https://t.me/sPerformance', source: YANDEX, status: 'confirmed' as FactStatus },
     // У компании нет страниц ВКонтакте и Instagram. Ссылки карточки на vk.com/yandex.maps и t.me/mapsyandex принадлежат Яндексу.
+    // Карточка 2ГИС есть (отзывы переданы владельцем). TODO(owner): прислать ссылку на карточку, чтобы добавить кнопку.
+    twoGis: { enabled: false, url: null as string | null, source: 'Владелец', status: 'verify' as FactStatus },
     vk: { enabled: false, url: null, source: '', status: 'verify' as FactStatus },
     instagram: { enabled: false, url: null, source: '', status: 'verify' as FactStatus },
   },
 
-  // TODO(owner): в карточке только «открыто до 18:00», расписания по дням нет. Прислать график по дням.
-  schedule: { value: null, source: `${YANDEX}: «открыто до 18:00»`, status: 'verify' } as Fact<string | null>,
-  scheduleFallback: 'График уточняйте по телефону',
+  // График передан владельцем, совпадает с карточкой Яндекса («открыто до 18:00»).
+  schedule: {
+    value: [
+      { days: 'Пн — сб', schemaDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'], hours: '9:00–18:00', opens: '09:00', closes: '18:00' },
+      { days: 'Вс', schemaDays: ['Sunday'], hours: 'Выходной', opens: null, closes: null },
+    ],
+    label: 'Пн — сб 9:00–18:00, вс выходной',
+    source: 'Владелец',
+    status: 'confirmed',
+  },
 
   // TODO(owner/заказчик): сверить цифры с живой карточкой перед запуском.
   // Если на карточке нет отзывов, выставить enabled: false: рейтинг исчезнет из hero, блока цифр, страницы «О компании» и JSON-LD.
@@ -117,8 +129,41 @@ export const company = {
   // TODO(owner): история, люди, год основания, опыт, оборудование. Пока null, блок не рендерится.
   story: { value: null, source: '', status: 'verify' } as Fact<string | null>,
 
-  // TODO(owner): вопросы и ответы от владельца. Пока пусто, блок не рендерится.
-  faq: [] as { q: string; a: string }[],
+  // Ответы собраны из подтверждённых фактов выше. TODO(owner): проверить формулировки.
+  faq: [
+    {
+      q: 'С какими автомобилями вы работаете?',
+      a: 'BMW, Mercedes-Benz и MINI: эти марки указаны в карточке сервиса на Яндекс Картах. Если у вас другая марка, уточните по телефону или в WhatsApp.',
+    },
+    {
+      q: 'Нужно ли записываться заранее?',
+      a: 'Да, работаем по записи. Напишите в WhatsApp или Telegram либо позвоните, чтобы выбрать удобный день.',
+    },
+    {
+      q: 'Сколько стоит ремонт или диагностика?',
+      a: 'Стоимость уточняйте по телефону или в WhatsApp. Чтобы разговор был предметным, сразу укажите марку, модель и год автомобиля и опишите, что происходит.',
+    },
+    {
+      q: 'Какой у вас график?',
+      a: 'С понедельника по субботу с 9:00 до 18:00. Воскресенье выходной.',
+    },
+    {
+      q: 'Как можно оплатить?',
+      a: 'Картой, через СБП, переводом или наличными.',
+    },
+    {
+      q: 'Где вы находитесь и есть ли парковка?',
+      a: 'Севастополь, Фиолентовское шоссе, 7. Парковка есть. Маршрут удобно построить в Яндекс Картах, ссылка на странице «Контакты».',
+    },
+    {
+      q: 'Можно ли заказать запчасти через вас?',
+      a: 'Да, заказ запчастей есть в списке услуг. Напишите марку, модель и год автомобиля, а лучше сразу VIN-номер, и какие детали нужны.',
+    },
+    {
+      q: 'Вы делаете чип-тюнинг?',
+      a: 'Да, чип-тюнинг есть в списке услуг. Что можно сделать на вашем автомобиле, уточняйте по телефону или в WhatsApp.',
+    },
+  ] as { q: string; a: string }[],
 
   // TODO(owner): ФИО/наименование, ИНН, ОГРН. В подвал не выводятся, пока не подтверждены.
   legal: { value: null, source: '', status: 'verify' } as Fact<string | null>,

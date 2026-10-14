@@ -3,10 +3,23 @@ import type { ReactNode } from 'react'
 import { Gallery } from '../components/Gallery'
 import { PageHead } from '../components/PageHead'
 import { YandexReviewsButton } from '../components/RatingLink'
+import { ReviewQuote } from '../components/Reviews'
+import { Faq } from '../components/Faq'
 import { Reveal } from '../components/Reveal'
 import { ADDRESS_LINE, company, YANDEX_MAPS_URL } from '../data/company'
+import { photos } from '../data/photos'
 import { reviews } from '../data/reviews'
 import { useNav } from '../lib/nav'
+
+/** Порядок и раскладка пяти фото: на телефоне пара, широкое, пара. */
+const ABOUT_ORDER = ['f30-rear-bay', 'g20-front-bay', 'g30-engine-bay', 'm5-engine', 'f30-workshop']
+const ABOUT_GALLERY = [
+  'col-span-1 md:col-span-4',
+  'col-span-1 md:col-span-3 md:mt-24',
+  'col-span-2 md:col-span-5 md:mt-8',
+  'col-span-1 md:col-span-5 md:col-start-2',
+  'col-span-1 md:col-span-4 md:mt-16',
+]
 
 interface Thesis {
   title: string
@@ -42,14 +55,14 @@ export function About() {
       title: 'Как связаться и оплатить',
       body: (
         <p>
-          WhatsApp, Telegram или телефон. Запись заранее. Оплата картой, СБП, переводом или наличными.
+          WhatsApp, Telegram или телефон. Запись заранее. График: {company.schedule.label.toLowerCase()}. Оплата картой, СБП, переводом или наличными.
         </p>
       ),
     },
   ]
   if (rating.enabled) {
     theses.push({
-      title: 'Что пишут на картах',
+      title: 'Что пишут клиенты',
       body: (
         <>
           <p>
@@ -58,14 +71,15 @@ export function About() {
               на Яндекс Картах · {rating.value.ratingCount} оценок · {rating.value.reviewCount} отзывов
             </span>
           </p>
-          {reviews.slice(0, 3).map((r) => (
-            <blockquote key={r.author + r.date} className="mt-6 border-l-2 border-red pl-5 text-silver">
-              «{r.text}»
-              <footer className="mt-2 text-sm text-steel">
-                {r.author} · {r.source}
-              </footer>
-            </blockquote>
-          ))}
+          {reviews.length > 0 && (
+            <ul className="mt-8 grid gap-8">
+              {reviews.slice(0, 2).map((r) => (
+                <li key={r.author + r.date} className="border-l-2 border-red pl-5">
+                  <ReviewQuote review={r} size="sm" />
+                </li>
+              ))}
+            </ul>
+          )}
           <YandexReviewsButton className="mt-6" />
         </>
       ),
@@ -100,7 +114,7 @@ export function About() {
         </div>
       </section>
 
-      <Gallery title="Работа в боксе" />
+      <Gallery photos={ABOUT_ORDER.map((src) => photos.find((p) => p.src.includes(src))!).filter(Boolean)} layout={ABOUT_GALLERY} />
 
       {company.story.status === 'confirmed' && company.story.value && (
         <section className="bg-graphite py-20 lg:py-28">
@@ -111,21 +125,7 @@ export function About() {
         </section>
       )}
 
-      {company.faq.length > 0 && (
-        <section className="bg-black py-20 lg:py-28">
-          <div className="wrap">
-            <h2 className="font-head text-[clamp(30px,4.4vw,60px)] font-extrabold text-silver">Вопросы</h2>
-            <dl className="mt-10 border-t border-line">
-              {company.faq.map((f) => (
-                <div key={f.q} className="grid gap-3 border-b border-line py-6 md:grid-cols-2">
-                  <dt className="font-medium text-silver">{f.q}</dt>
-                  <dd className="text-steel">{f.a}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-      )}
+      <Faq />
 
       <section className="bg-red text-white">
         <div className="wrap flex flex-col gap-6 py-14 sm:flex-row sm:items-center sm:justify-between lg:py-20">

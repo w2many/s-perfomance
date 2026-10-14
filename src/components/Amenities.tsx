@@ -1,8 +1,8 @@
 import { company } from '../data/company'
 
 /** Строки удобств и условий: только подтверждённые факты. */
-export function Amenities({ className = '' }: { className?: string }) {
-  const rows = [...company.amenities.value, company.scheduleFallback, company.payment.label]
+export function Amenities({ className = '', withSchedule = true }: { className?: string; withSchedule?: boolean }) {
+  const rows = [...company.amenities.value, ...(withSchedule ? [company.schedule.label] : []), company.payment.label]
   return (
     <ul className={`border-t border-line ${className}`}>
       {rows.map((r) => (

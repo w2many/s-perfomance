@@ -6,6 +6,7 @@ import { ContactForm } from '../components/ContactForm'
 import { CtaBand } from '../components/CtaBand'
 import { PageHead } from '../components/PageHead'
 import { Reveal } from '../components/Reveal'
+import { YandexMap } from '../components/YandexMap'
 import { ADDRESS_LINE, company, PRIMARY_PHONE, YANDEX_MAPS_URL } from '../data/company'
 import { useNav } from '../lib/nav'
 
@@ -47,25 +48,38 @@ export function Contacts() {
       </section>
 
       <section className="bg-graphite py-16 lg:py-24">
-        <div className="wrap grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <Reveal>
-            <h2 className="font-head text-[clamp(26px,3vw,40px)] font-extrabold text-silver">Адрес</h2>
-            <p className="mt-5 flex gap-3 font-head text-[clamp(26px,3.4vw,48px)] font-bold leading-tight text-silver">
-              <MapPin aria-hidden className="mt-[0.2em] size-[0.8em] shrink-0 text-red-ink" />
-              {ADDRESS_LINE}
-            </p>
-            <h3 className="mt-12 font-head text-[clamp(22px,2.2vw,30px)] font-bold text-silver">Как найти</h3>
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-              <a href={YANDEX_MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+        <div className="wrap grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+          <Reveal className="grid content-start gap-12">
+            <div>
+              <h2 className="font-head text-[clamp(26px,3vw,40px)] font-extrabold text-silver">Адрес</h2>
+              <p className="mt-5 flex gap-3 font-head text-[clamp(26px,3vw,44px)] font-bold leading-tight text-silver">
+                <MapPin aria-hidden className="mt-[0.2em] size-[0.8em] shrink-0 text-red-ink" />
+                {ADDRESS_LINE}
+              </p>
+              <a href={YANDEX_MAPS_URL} target="_blank" rel="noopener noreferrer" className="btn btn-primary mt-6">
                 <Navigation size={18} aria-hidden />
                 Построить маршрут
               </a>
             </div>
-            <MapEmbed />
+            <div>
+              <h2 className="font-head text-[clamp(22px,2.2vw,30px)] font-bold text-silver">График</h2>
+              <dl className="mt-4 border-t border-line">
+                {company.schedule.value.map((d) => (
+                  <div key={d.days} className="flex justify-between gap-6 border-b border-line py-4 text-[clamp(17px,1.4vw,20px)]">
+                    <dt className="text-silver">{d.days}</dt>
+                    <dd className={`tabular-nums ${d.opens ? 'text-silver' : 'text-steel'}`}>{d.hours}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+            <div>
+              <h2 className="sr-only">Условия</h2>
+              <Amenities withSchedule={false} />
+            </div>
           </Reveal>
-          <Reveal index={1} className="lg:pt-2">
-            <h2 className="sr-only">Условия</h2>
-            <Amenities />
+          <Reveal index={1}>
+            <h2 className="sr-only">Как найти</h2>
+            <YandexMap className="aspect-[4/5] w-full max-w-full sm:aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[560px]" />
           </Reveal>
         </div>
       </section>
@@ -78,25 +92,5 @@ export function Contacts() {
 
       <CtaBand />
     </>
-  )
-}
-
-/** Карта по клику. Пока координаты не подтверждены владельцем, вместо карты только кнопка маршрута. */
-function MapEmbed() {
-  const [shown, setShown] = useState(false)
-  const { coordinates } = company
-  if (coordinates.status !== 'confirmed') return null
-  const { lat, lon } = coordinates.value
-  return shown ? (
-    <iframe
-      title="Карта: S-Performance"
-      src={`https://yandex.ru/map-widget/v1/?ll=${lon}%2C${lat}&z=16&pt=${lon}%2C${lat}%2Cpm2rdm`}
-      className="mt-6 aspect-[4/3] w-full border-0 bg-graphite-2"
-      loading="lazy"
-    />
-  ) : (
-    <button type="button" onClick={() => setShown(true)} className="btn btn-outline mt-3">
-      Показать карту
-    </button>
   )
 }
