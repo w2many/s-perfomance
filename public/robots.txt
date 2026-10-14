@@ -1,0 +1,5 @@
+# TODO(owner): заменить s-performance.example на боевой домен.
+User-agent: *
+Allow: /
+
+Sitemap: https://s-performance.example/sitemap.xml

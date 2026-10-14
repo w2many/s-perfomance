@@ -1,0 +1,8 @@
+{
+  "name": "S-Performance",
+  "short_name": "S-Performance",
+  "icons": [{ "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }],
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "display": "browser"
+}

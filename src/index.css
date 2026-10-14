@@ -1,0 +1,236 @@
+@import 'tailwindcss';
+
+/* Фирменные токены. Значения серебра сверены пипеткой по файлу логотипа. */
+:root {
+  --black: #050505;
+  --graphite: #111113;
+  --graphite-2: #1b1b1e;
+  --silver: #d6d8dc;
+  --steel: #8c9097;
+  --line: rgba(214, 216, 220, 0.18);
+  --red: #e3252e;
+  --red-lo: #b81b23;
+  /* Красный для текста на чёрном: #e3252e даёт 4.4:1, этот оттенок 5.1:1. */
+  --red-ink: #ec3b43;
+  --white: #ffffff;
+  --header-h: 64px;
+  --bar-h: 64px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-h: 76px;
+    --bar-h: 0px;
+  }
+}
+
+@theme {
+  --color-*: initial;
+  --color-black: var(--black);
+  --color-graphite: var(--graphite);
+  --color-graphite-2: var(--graphite-2);
+  --color-silver: var(--silver);
+  --color-steel: var(--steel);
+  --color-line: var(--line);
+  --color-red: var(--red);
+  --color-red-lo: var(--red-lo);
+  --color-red-ink: var(--red-ink);
+  --color-white: var(--white);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  /* Orbitron не содержит кириллицы: кириллические знаки берутся из Exo 2 по unicode-range. */
+  --font-display: 'Orbitron', 'Exo 2', system-ui, sans-serif;
+  /* Кириллические заголовки и телефон: Exo 2 (у Orbitron нет кириллицы, а его цифры 7 и 0 хуже читаются в номере). */
+  --font-head: 'Exo 2', system-ui, sans-serif;
+  --font-sans: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@layer base {
+  html {
+    background: var(--black);
+    color: var(--silver);
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: var(--header-h);
+  }
+  body {
+    background: var(--black);
+    font-family: var(--font-sans);
+    font-size: clamp(16px, 0.25vw + 15px, 18px);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::selection {
+    background: var(--red);
+    color: var(--white);
+  }
+  :focus-visible {
+    outline: 2px solid var(--red-ink);
+    outline-offset: 3px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  button {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1440px;
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  @media (min-width: 768px) {
+    .wrap {
+      padding-inline: 40px;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wrap {
+      padding-inline: 80px;
+    }
+  }
+
+  .num-outline {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--silver);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 0 22px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.1;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s,
+      transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .btn-primary {
+    background: var(--red);
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-primary:hover {
+    background: var(--red-lo);
+    transform: translateY(-2px);
+  }
+  .btn-primary:active {
+    background: var(--red-lo);
+    transform: translateY(0);
+  }
+  .btn-outline {
+    border: 1px solid var(--silver);
+    color: var(--silver);
+  }
+  .btn-outline:hover {
+    background: var(--silver);
+    color: var(--black);
+  }
+  .btn-white {
+    background: var(--white);
+    color: var(--black);
+  }
+  .btn-white:hover {
+    background: var(--black);
+    color: var(--white);
+  }
+  .btn-outline-white {
+    border: 1px solid var(--white);
+    color: var(--white);
+  }
+  .btn-outline-white:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* Блик только на главной кнопке hero */
+  .shimmer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 40%;
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateX(-160%) skewX(-20deg);
+    animation: shimmer 4.5s 1.6s infinite;
+    pointer-events: none;
+  }
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-160%) skewX(-20deg);
+    }
+    22%,
+    100% {
+      transform: translateX(360%) skewX(-20deg);
+    }
+  }
+
+  /* Аккордеон: 0fr → 1fr */
+  .acc {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .acc[data-open='true'] {
+    grid-template-rows: 1fr;
+  }
+  .acc > div {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .field {
+    width: 100%;
+    min-height: 52px;
+    padding: 14px 16px;
+    background: var(--black);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    color: var(--silver);
+    font-size: 16px;
+    transition: border-color 0.2s;
+  }
+  .field::placeholder {
+    color: var(--steel);
+  }
+  .field:hover {
+    border-color: rgba(214, 216, 220, 0.4);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--red-ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    animation: none;
+    display: none;
+  }
+  .acc,
+  .btn {
+    transition: none;
+  }
+  .btn-primary:hover {
+    transform: none;
+  }
+}
