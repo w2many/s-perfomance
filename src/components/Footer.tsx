@@ -3,76 +3,123 @@ import { ADDRESS_LINE, buildWhatsAppLink, company, PRIMARY_PHONE, TELEGRAM_URL, 
 import { buildHref, PAGES, useNav } from '../lib/nav'
 import { BrandMark } from './BrandMark'
 
-const ext = { target: '_blank', rel: 'noopener noreferrer' } as const
-
 const YEAR = new Date().getFullYear()
+const ext = { target: '_blank', rel: 'noopener noreferrer' } as const
+const linkCls = 'inline-flex min-h-10 items-center gap-1.5 text-silver transition-colors hover:text-white'
+
+function Col({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <p className="mb-3 font-semibold text-white">{title}</p>
+      {children}
+    </div>
+  )
+}
 
 export function Footer() {
   const { navigateTo } = useNav()
   return (
-    <footer className="bg-graphite pb-[calc(var(--bar-h)+8px)]">
-      <div className="wrap grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr] lg:py-20">
-        <div className="grid content-start gap-5">
-          <div className="w-fit bg-black p-3">
+    <footer className="border-t border-line bg-black pb-[calc(var(--bar-h)+48px)] pt-16 lg:pb-12 lg:pt-20">
+      <div className="wrap">
+        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
+          <a
+            href={buildHref('home')}
+            onClick={(e) => {
+              e.preventDefault()
+              navigateTo('home')
+            }}
+            aria-label="S-Performance, на главную"
+            className="w-fit"
+          >
             <BrandMark variant="footer" />
-          </div>
-          <p className="max-w-xs text-steel">Автосервис в Севастополе. BMW, Mercedes-Benz, MINI.</p>
-        </div>
-
-        <div className="grid content-start gap-3">
-          <p className="text-silver">{ADDRESS_LINE}</p>
-          <a href={PRIMARY_PHONE.href} className="font-head text-xl font-bold text-silver hover:text-white">
+          </a>
+          <a
+            href={PRIMARY_PHONE.href}
+            className="w-fit whitespace-nowrap font-head text-[clamp(28px,4vw,48px)] font-extrabold leading-none tabular-nums text-white transition-colors hover:text-red-ink"
+          >
             {PRIMARY_PHONE.display}
           </a>
-          <ul className="mt-2 grid gap-2 text-steel">
-            {company.channels.whatsapp.enabled && (
-              <li>
-                <a href={buildWhatsAppLink()} {...ext} className="inline-flex items-center gap-1.5 hover:text-silver">
-                  WhatsApp <ArrowUpRight size={15} aria-hidden />
-                </a>
-              </li>
-            )}
-            {company.channels.telegram.enabled && (
-              <li>
-                <a href={TELEGRAM_URL} {...ext} className="inline-flex items-center gap-1.5 hover:text-silver">
-                  Telegram <ArrowUpRight size={15} aria-hidden />
-                </a>
-              </li>
-            )}
-            <li>
-              <a href={YANDEX_MAPS_URL} {...ext} className="inline-flex items-center gap-1.5 hover:text-silver">
-                Яндекс Карты <ArrowUpRight size={15} aria-hidden />
-              </a>
-            </li>
-          </ul>
         </div>
 
-        <nav aria-label="Разделы сайта">
-          <ul className="grid gap-3">
-            {PAGES.map((p) => (
-              <li key={p.id}>
-                <a
-                  href={buildHref(p.id)}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    navigateTo(p.id)
-                  }}
-                  className="text-silver hover:text-white"
-                >
-                  {p.label}
+        <div className="mt-14 grid gap-10 border-t border-line pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          <Col title="Адрес">
+            <p className="text-silver">{ADDRESS_LINE}</p>
+            <ul className="mt-2">
+              <li>
+                <a href={YANDEX_MAPS_URL} {...ext} className={linkCls}>
+                  Яндекс Карты <ArrowUpRight size={15} aria-hidden />
                 </a>
               </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <div className="wrap">
-        <div className="flex flex-wrap justify-between gap-3 border-t border-line py-6 text-sm text-steel">
-          <span>
-            © {YEAR} {company.name.value}
-          </span>
-          <span>{ADDRESS_LINE}</span>
+              {company.channels.twoGis.enabled && company.channels.twoGis.url && (
+                <li>
+                  <a href={company.channels.twoGis.url} {...ext} className={linkCls}>
+                    2ГИС <ArrowUpRight size={15} aria-hidden />
+                  </a>
+                </li>
+              )}
+            </ul>
+          </Col>
+
+          <Col title="Связь">
+            <ul>
+              <li>
+                <a href={PRIMARY_PHONE.href} className={linkCls}>
+                  {PRIMARY_PHONE.display}
+                </a>
+              </li>
+              {company.channels.whatsapp.enabled && (
+                <li>
+                  <a href={buildWhatsAppLink()} {...ext} className={linkCls}>
+                    WhatsApp <ArrowUpRight size={15} aria-hidden />
+                  </a>
+                </li>
+              )}
+              {company.channels.telegram.enabled && (
+                <li>
+                  <a href={TELEGRAM_URL} {...ext} className={linkCls}>
+                    Telegram <ArrowUpRight size={15} aria-hidden />
+                  </a>
+                </li>
+              )}
+            </ul>
+          </Col>
+
+          <nav aria-label="Разделы сайта">
+            <p className="mb-3 font-semibold text-white">Разделы</p>
+            <ul>
+              {PAGES.map((p) => (
+                <li key={p.id}>
+                  <a
+                    href={buildHref(p.id)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      navigateTo(p.id)
+                    }}
+                    className={linkCls}
+                  >
+                    {p.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <Col title="График">
+            <dl className="grid max-w-xs gap-2">
+              {company.schedule.value.map((d) => (
+                <div key={d.days} className="flex justify-between gap-6">
+                  <dt className="text-silver">{d.days}</dt>
+                  <dd className="font-head font-bold tabular-nums text-white">{d.hours}</dd>
+                </div>
+              ))}
+            </dl>
+            <p className="mt-6 text-sm text-steel">Названия марок принадлежат их владельцам.</p>
+          </Col>
         </div>
+
+        <p className="mt-14 border-t border-line pt-6 text-sm text-steel">
+          © {YEAR} {company.name.value}. Автосервис в Севастополе.
+        </p>
       </div>
     </footer>
   )
