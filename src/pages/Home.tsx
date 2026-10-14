@@ -8,6 +8,7 @@ import { ContactForm } from '../components/ContactForm'
 import { CountUp } from '../components/CountUp'
 import { CtaBand } from '../components/CtaBand'
 import { Gallery } from '../components/Gallery'
+import { Marquee } from '../components/Marquee'
 import { SCAN_EVENT } from '../components/Header'
 import { YandexReviewsButton } from '../components/RatingLink'
 import { Reveal } from '../components/Reveal'
@@ -17,9 +18,20 @@ import { ServiceList } from '../components/ServiceList'
 import { ADDRESS_LINE, company, PRIMARY_PHONE, YANDEX_MAPS_URL } from '../data/company'
 import { reviews } from '../data/reviews'
 import { EASE_OUT, plainFade, slideX } from '../lib/motion'
-import { buildHref, useNav } from '../lib/nav'
+import { useNav } from '../lib/nav'
 
 const { rating } = company
+
+/** Пункты бегущей строки: только подтверждённые факты из карточки. */
+const MARQUEE = [
+  ...company.brands.value,
+  'Компьютерная диагностика',
+  'Чип-тюнинг',
+  'Эндоскопия двигателя',
+  'Ремонт деталей АКПП',
+  'Ремонт электрооборудования',
+  'Запись заранее',
+]
 
 export function Home() {
   const { scrollYProgress } = useScroll()
@@ -51,17 +63,11 @@ export function Home() {
 }
 
 function Hero() {
-  const { navigateTo } = useNav()
   const [logoScan, setLogoScan] = useState(0)
-  const strip = [
-    { title: company.brands.value.join(' · '), note: 'Марки из карточки Яндекс Карт', to: 'services' as const },
-    { title: 'Запись заранее', note: 'По телефону или в мессенджере', to: 'contacts' as const },
-    { title: company.address.value.street, note: 'Как проехать', to: 'contacts' as const },
-  ]
 
   return (
-    <section className="relative bg-black">
-      <div className="wrap flex min-h-[max(560px,calc(100svh-var(--header-h)-var(--bar-h)))] flex-col">
+    <section className="relative flex min-h-[max(560px,calc(100svh-var(--header-h)-var(--bar-h)))] flex-col bg-black pb-3 lg:pb-8">
+      <div className="wrap flex flex-1 flex-col">
         <div className="grid flex-1 items-center gap-10 py-5 lg:grid-cols-[1.1fr_.9fr] lg:gap-12 lg:py-10">
           <div className="min-w-0 @container">
             <motion.p
@@ -144,31 +150,8 @@ function Hero() {
             </div>
           </motion.div>
         </div>
-
-        <div className="pb-3 lg:pb-8">
-          <ScanLine />
-          <ul className="grid lg:grid-cols-3">
-            {strip.map((s, i) => (
-              <li key={s.title} className={`border-line ${i > 0 ? 'border-t lg:border-l lg:border-t-0' : ''}`}>
-                <a
-                  href={buildHref(s.to)}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    navigateTo(s.to)
-                  }}
-                  className="group flex items-center justify-between gap-4 py-2.5 lg:px-6 lg:py-5 lg:first:pl-0"
-                >
-                  <span className="min-w-0">
-                    <span className={`block text-[clamp(16px,1.4vw,20px)] font-bold text-silver ${i === 0 ? 'font-display' : 'font-head'}`}>{s.title}</span>
-                    <span className="block text-[13px] text-steel lg:text-sm">{s.note}</span>
-                  </span>
-                  <ArrowRight size={18} aria-hidden className="shrink-0 text-steel transition-colors group-hover:text-red-ink" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
+      <Marquee items={MARQUEE} />
     </section>
   )
 }
